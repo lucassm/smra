@@ -123,7 +123,8 @@ def _gerar_setores(nos):
         nos_do_setor = [no for no in nos.values() if no.nome in nomes_nos_do_setor]
         setores[setor_tag['nome']] = Setor(nome=setor_tag['nome'],
                                            vizinhos=vizinhos_do_setor,
-                                           nos_de_carga=nos_do_setor)
+                                           nos_de_carga=nos_do_setor,
+                                           prioridade=int(setor_tag['prioridade']))
         print 'Setor %s criado.' % setores[setor_tag['nome']].nome
     return setores
 

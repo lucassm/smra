@@ -241,17 +241,17 @@
 			<comprimento multip="k" unid="m">1</comprimento>
 		</trecho>
 
-		<setor nome="S1"/>
-		<setor nome="A"/>
-		<setor nome="B"/>
-		<setor nome="C"/>
-		<setor nome="F"/>
-		<setor nome="G"/>
-		<setor nome="H"/>
-		<setor nome="I"/>
-		<setor nome="S2"/>
-		<setor nome="D"/>
-		<setor nome="E"/>
+		<setor nome="S1" prioridade="0"/>
+		<setor nome="A"  prioridade="8"/>
+		<setor nome="B"  prioridade="4"/>
+		<setor nome="C"  prioridade="10"/>
+		<setor nome="F"  prioridade="5"/>
+		<setor nome="G"  prioridade="5"/>
+		<setor nome="H"  prioridade="5"/>
+		<setor nome="I"  prioridade="5"/>
+		<setor nome="S2" prioridade="0"/>
+		<setor nome="D"  prioridade="8"/>
+		<setor nome="E"  prioridade="6"/>
 
 		<alimentador nome="S1_AL1"/>
 		<alimentador nome="S1_AL2"/>
