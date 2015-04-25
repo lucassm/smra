@@ -19,16 +19,37 @@ import numpy as np
 # Comportamentos:
 #
 # CompRequest1 : Comportamento do tipo FIPA-Request Participante
-#                 que o agente AA executa quando recebe mensagem
-#                 do Agente AD com informações de de TRIP no sistema
-# CompRequest2 : Comportamento do tipo FIPA-Request Iniciante que o
-#                 agente AA executa solicitando do agente Topologia
-#                 a arvore de seu alimentador
+#                que o agente AA executa quando recebe mensagem
+#                do Agente AD com informações de TRIP no sistema
+#                Este comportamento também lança o comportamento
+#                ContractNet Iniciante, realiza a poda dos setores
+#                desenergizados e envia mensagem de atualização da
+#                topologia da rede para outros AA
 #
+# CompRequest2 : Comportamento do tipo FIPA-Request Participante que
+#                recebe mensagens de atualização da topologia da rede
 #
-
+# CompContNet1 : Comportamento FIPA-ContractNet Iniciante que envia mensagens
+#                CFP para outros agentes alimentadores solicitando propostas
+#                de restauração. Este comportamento também faz a analise das
+#                das propostas e analisa-as selecionando a que julga ser a
+#                melhor
+#
+# CompContNet2 : Comportamento FIPA-ContractNet Participante que é acionado
+#                quando um agente recebe uma mensagem do Tipo CFP enviando logo
+#                em seguida uma proposta e caso esta seja selecinada realiza as
+#                as análises de restrição para que seja possível a restauração
 
 class CompRequest1(FipaRequestProtocol):
+     '''CompRequest1
+
+        Comportamento do tipo FIPA-Request Participante
+        que o agente AA executa quando recebe mensagem
+        do Agente AD com informações de TRIP no sistema
+        Este comportamento também lança o comportamento
+        ContractNet Iniciante, realiza a poda dos setores
+        desenergizados e envia mensagem de atualização da
+        topologia da rede para outros AA'''
 
     def __init__(self, agent):
         super(CompRequest1, self).__init__(
@@ -125,6 +146,10 @@ class CompRequest1(FipaRequestProtocol):
 
 
 class CompRequest2(FipaRequestProtocol):
+    '''CompRequest2 
+
+       Comportamento do tipo FIPA-Request Participante que 
+       recebe mensagens de atualização da topologia da rede'''
 
     def __init__(self, agent):
         super(CompRequest2, self).__init__(agent=agent,
@@ -186,8 +211,14 @@ class CompRequest2(FipaRequestProtocol):
 
 
 class CompContNet1(FipaContractNetProtocol):
-    """
-    """
+    '''CompContNet1
+
+       Comportamento FIPA-ContractNet Iniciante que envia mensagens
+       CFP para outros agentes alimentadores solicitando propostas
+       de restauração. Este comportamento também faz a analise das
+       das propostas e analisa-as selecionando a que julga ser a 
+       melhor'''
+
     def __init__(self, agent, message):
         super(CompContNet1, self).__init__(
             agent=agent, message=message, is_initiator=True)
@@ -315,7 +346,13 @@ class CompContNet1(FipaContractNetProtocol):
 
 
 class CompContNet2(FipaContractNetProtocol):
+    '''CompContNet2
 
+       Comportamento FIPA-ContractNet Participante que é acionado
+       quando um agente recebe uma mensagem do Tipo CFP enviando logo
+       em seguida uma proposta e caso esta seja selecinada realiza as
+       as análises de restrição para que seja possível a restauração'''
+       
     def __init__(self, agent):
         super(CompContNet2, self).__init__(agent=agent,
                                            message=None,

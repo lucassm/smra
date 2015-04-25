@@ -15,7 +15,10 @@ import numpy as np
 #
 #   CompRequest_1 : Comportamento do tipo FIPA-Request Participante
 #                   que o agente AD executa quando recebe uma
-#                   mensagem GOOSE de um IED;
+#                   mensagem GOOSE de um IED. Este comportamento identifica
+#                   o setor sob falta e envia comando de abertura para os
+#                   dispositivos de fronteira do setor faltoso;
+#
 #   CompRequest_3 : Comportamento do tipo FIPA-Request Iniciante que
 #                   o agente AD executa ao enviar a mensagem que
 #                   informa ao agente AA sobre a ocorrencia de uma
