@@ -40,8 +40,9 @@ import numpy as np
 #                em seguida uma proposta e caso esta seja selecinada realiza as
 #                as análises de restrição para que seja possível a restauração
 
+
 class CompRequest1(FipaRequestProtocol):
-     '''CompRequest1
+    '''CompRequest1
 
         Comportamento do tipo FIPA-Request Participante
         que o agente AA executa quando recebe mensagem
@@ -235,7 +236,17 @@ class CompContNet1(FipaContractNetProtocol):
         demais_propositores = list()
         display_message(self.agent.aid.name, 'Analisando propostas...')
 
+        # lógica de verificação de alimentadores da mesma subestacao
+        proposes_same_sub = [message for message in proposes 
+                             if message.sender.localname in 
+                             self.agent.subestacao.alimentadores.keys()]
+
+        if proposes_same_sub:
+            proposes = proposes_same_sub
+
         i = 1
+
+        # lógica de seleção de propostas pela maior potência disponibilizada
         for message in proposes:
             content = json.loads(message.content)
             potencia = content['dados']['potencia']
@@ -441,6 +452,7 @@ class AgenteAlimentador(Agent):
             if self.aid.localname in sub.alimentadores.keys():
                 self.subestacao = sub
 
+        self.comunicacao = topologia['comunicacao']
         self.agentes_solicitados = list()
         self.podas = list()
 
@@ -635,7 +647,50 @@ def podar_setor_mais_profundo(agent,
 
 
 def inserir_ramos_recursivo(agent, alimentador, subestacao, ramos):
-    ramos_2 = list()
+    
+    # Escolha da ordem de inserção dos ramos de acordo com as 
+    # prioridades
+
+    # calculo dos indices de prioridade de cada ramo
+    # de acordo com a seguinte equação:
+    #                         soma_das_prioridades  
+    #   prioridade_media =  -------------------------
+    #                       numero de setores do ramo
+
+    indice_prioridades_dict = {}
+    for ramo in ramos:
+        soma_prioridades = 0
+        for setor in ramo[0].values():
+            soma_prioridades += setor.prioridade
+
+        # indice_prioridades_dict é um dicionario contendo pares
+        # chave/valor, as chaves são o identificador do objeto
+        # ramo e os valores são tuplas com o primeiro elemento
+        # o indice de prioridade e o segundo o proprio obejto
+        # ramo
+        indice_prioridades_dict[id(ramo)] = (
+            float(soma_prioridades)/float(len(ramo[0].keys())), 
+            ramo
+        )
+
+    # reorganização da lista ramos de acordo com a prioridade
+    # de cada ramo
+    ramos_2 = []
+    for ramo in ramos:
+        prioridade_max = max(
+            [i[0] for i in indice_prioridades_dict.values()]
+        )
+        # a variavel ramo recebe o objeto ramo de maior prioridade
+        # dentre os existentes no dicionario indice_prioridades_dict
+        ramo = [i[1] for i in indice_prioridades_dict.values()
+         if i[0] == prioridade_max]
+        
+        indice_prioridades_dict.pop(id(ramo[0]))
+        ramos_2.append(ramo[0])
+
+    ramos = ramos_2
+    ramos_2 = []
+
 
     # for percorre os ramos afetados tentando a recomposicao de cada um deles!
     for ramo in ramos:
