@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--> Estrutura da rede em analise</!-->
+<!-->
+*****************************************
+**
+** Informacoes a respeito da estrutura da rede
+**
+*****************************************
+</!-->
 <rede>
+	<!-->
+	*****************************************
+	**
+	** Elementos que compoem a rede
+	**
+	*****************************************
+	</!-->
 	<elementos>
 		<chave nome="1" estado="fechado"/>
 		<chave nome="2" estado="fechado"/>
@@ -326,7 +339,14 @@
 		<subestacao nome="S1"/>
 		<subestacao nome="S2"/>
 	</elementos>
-
+	<!-->
+	*****************************************
+	**
+	** Relacionamento entre os elementos
+	** que compoem a rede
+	**
+	*****************************************
+	</!-->
 	<topologia>
 		<elemento tipo="no" nome="S1">
 			<vizinhos>
@@ -1360,4 +1380,91 @@
 			</transformadores>
 		</elemento>
 	</topologia>
+	<!-->
+	*****************************************
+	**
+	** Dados de Comunicacao dos IED
+	**
+	*****************************************
+	</!-->
+	<comunicacao>
+		<elemento tipo="chave" nome="1">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5001</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="2">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5002</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="3">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5003</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="4">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5004</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="5">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5005</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="6">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5006</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="7">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5007</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="8">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5008</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="9">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5009</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="10">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5010</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="11">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5011</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="12">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5012</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="13">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5013</porta>
+			</endereco>
+		</elemento>
+	</comunicacao>
 </rede>
