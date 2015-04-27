@@ -26,6 +26,7 @@ O código em xml deve ter a seguinte estrutura:
 # importaçoes necessárias
 from rede import Chave, Setor, Condutor, Trecho, Alimentador, NoDeCarga, Subestacao, Transformador, Fasor
 from bs4 import BeautifulSoup
+from collections import namedtuple
 
 # carraga o arquivo com as definições em xml
 f = open('rede_2.xml')
@@ -35,6 +36,7 @@ REDE = BeautifulSoup(f)
 
 ELEMENTOS = REDE.find_all('elementos')[0]
 TOPO = REDE.find_all('topologia')[0]
+COM = REDE.find_all('comunicacao')[0]
 
 
 def carregar_topologia():
@@ -47,14 +49,15 @@ def carregar_topologia():
     alimentadores = _gerar_alimentadores(setores, trechos, chaves)
     transformadores = _gerar_transformadores()
     subestacoes = _gerar_subestacaoes(alimentadores, transformadores)
-
+    comunicacao = _gerar_comunicacao()
     return {'chaves': chaves,
             'nos': nos,
             'setores': setores,
             'trechos': trechos,
             'alimentadores': alimentadores,
             'transformadores': transformadores,
-            'subestacoes': subestacoes}
+            'subestacoes': subestacoes,
+            'comunicacao': comunicacao}
 
 
 def _gerar_chaves():
@@ -303,6 +306,19 @@ def _gerar_subestacaoes(alimentadores, transformadores):
                                                   transformadores=trafos_da_subestacao)
         print 'Subestacao %s criada.' % subestacoes[sub_tag['nome']].nome
     return subestacoes
+
+
+def _gerar_comunicacao():
+    Comunicacao = namedtuple('Comunicacao', ['nome', 'ip', 'porta'])
+    chaves_comunica_dict = {}
+    for i in COM.find_all('elemento'):
+        chaves_comunica_dict[i['nome']] = Comunicacao(
+            i['nome'],
+            str(i.endereco.ip.text),
+            str(i.endereco.porta.text))
+
+    return chaves_comunica_dict
+
 
 if __name__ == '__main__':
     top = carregar_topologia()
