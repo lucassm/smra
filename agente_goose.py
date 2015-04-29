@@ -9,6 +9,8 @@ from pade.behaviours.protocols import FipaRequestProtocol
 
 import json
 
+import iec61850
+
 """
     Este é o código do agente Agente Goose!
 
@@ -71,6 +73,10 @@ class AgenteGoose(Agent):
     def __init__(self, aid):
 
         super(AgenteGoose, self).__init__(aid=aid, debug=False)
+
+        iec61850.createConnection('localhost', 5001)
+        iec61850.operate('SEL_751_1PRO/BKR1CSWI1.Pos', False)
+        iec61850.closeConnection()
 
         message = ACLMessage(ACLMessage.REQUEST)
         message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
