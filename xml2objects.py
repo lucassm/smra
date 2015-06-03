@@ -32,14 +32,22 @@ from collections import namedtuple
 f = open('rede_2.xml')
 
 # gera o objeto para iteração em xml do BeautifulSoup
-REDE = BeautifulSoup(f)
+rede = BeautifulSoup(f)
 
-ELEMENTOS = REDE.find_all('elementos')[0]
-TOPO = REDE.find_all('topologia')[0]
-COM = REDE.find_all('comunicacao')[0]
+elementos = rede.find_all('elementos')[0]
+topo = rede.find_all('topologia')[0]
+com = rede.find_all('comunicacao')[0]
 
 
-def carregar_topologia():
+def carregar_topologia(arquivo=None):
+    global rede, elementos, topo, com
+    if arquivo is not None:
+        f = open(arquivo)
+        rede = BeautifulSoup(f)
+        elementos = rede.find_all('elementos')[0]
+        topo = rede.find_all('topologia')[0]
+        com = rede.find_all('comunicacao')[0]
+
     chaves = _gerar_chaves()
     nos = _gerar_nos_de_carga()
     setores = _gerar_setores(nos)
@@ -63,7 +71,7 @@ def carregar_topologia():
 def _gerar_chaves():
     # Busca e instanciamento dos objetos do tipo Chave
     print 'Gerando chaves...'
-    chaves_xml = ELEMENTOS.find_all('chave')
+    chaves_xml = elementos.find_all('chave')
     chaves = dict()
     for chave_tag in chaves_xml:
         if chave_tag['estado'] == 'fechado':
@@ -78,10 +86,10 @@ def _gerar_chaves():
 def _gerar_nos_de_carga():
     # Busca e instanciamento dos objetos do tipo NoDeCarga
     print 'Gerando Nos de Carga...'
-    nos_xml = ELEMENTOS.find_all('no')
+    nos_xml = elementos.find_all('no')
     nos = dict()
     for no_tag in nos_xml:
-        elemento_tag = TOPO.find_all('elemento', tipo='no', nome=no_tag['nome'])[0]
+        elemento_tag = topo.find_all('elemento', tipo='no', nome=no_tag['nome'])[0]
         vizinhos = [no['nome'] for no in elemento_tag.vizinhos.findChildren('no')]
         chaves_do_no = [chave['nome']
                         for chave in elemento_tag.chaves.findChildren('chave')]
@@ -115,11 +123,11 @@ def _gerar_nos_de_carga():
 def _gerar_setores(nos):
     # Busca e instanciamento dos objetos do tipo Setor
     print 'Gerando Setores...'
-    setores_xml = ELEMENTOS.find_all('setor')
+    setores_xml = elementos.find_all('setor')
     setores = dict()
 
     for setor_tag in setores_xml:
-        elemento_tag = TOPO.find_all(
+        elemento_tag = topo.find_all(
             'elemento', tipo='setor', nome=setor_tag['nome'])[0]
         vizinhos_do_setor = [setor['nome'] for setor in elemento_tag.findChildren('setor')]
         nomes_nos_do_setor = [no['nome'] for no in elemento_tag.findChildren('no')]
@@ -135,7 +143,7 @@ def _gerar_setores(nos):
 def _associar_chaves_aos_setores(chaves, setores):
     # Associação das chaves aos setores
     for chave in chaves.values():
-        elemento_chave = TOPO.find_all('elemento', tipo='chave', nome=chave.nome)[0]
+        elemento_chave = topo.find_all('elemento', tipo='chave', nome=chave.nome)[0]
         chave.n1 = setores[elemento_chave.n1.setor['nome']]
         chave.n2 = setores[elemento_chave.n2.setor['nome']]
 
@@ -143,7 +151,7 @@ def _associar_chaves_aos_setores(chaves, setores):
 def _gerar_condutores():
     # Busca e instanciamento dos objetos do tipo Condutor
     print 'Gerando Condutores...'
-    condutores_xml = ELEMENTOS.find_all('condutor')
+    condutores_xml = elementos.find_all('condutor')
     condutores = dict()
 
     for condutor_tag in condutores_xml:
@@ -159,12 +167,12 @@ def _gerar_condutores():
 def _gerar_trechos(nos, chaves, condutores):
     # Busca e instanciamento dos objetos do tipo Alimentador
     print 'Gerando Trechos...'
-    trechos_xml = ELEMENTOS.find_all('trecho')
+    trechos_xml = elementos.find_all('trecho')
     trechos = dict()
 
     for trecho_tag in trechos_xml:
         print trecho_tag['nome']
-        elemento_tag = TOPO.find_all('elemento', tipo='trecho', nome=trecho_tag['nome'])[0]
+        elemento_tag = topo.find_all('elemento', tipo='trecho', nome=trecho_tag['nome'])[0]
         if elemento_tag.n1.no is not None:
             n1 = nos[elemento_tag.n1.no['nome']]
         elif elemento_tag.n1.chave is not None:
@@ -196,11 +204,11 @@ def _gerar_trechos(nos, chaves, condutores):
 def _gerar_alimentadores(setores, trechos, chaves):
     # Busca e instanciamento dos objetos do tipo Alimentador
     print 'Gerando Alimentadores...'
-    alimentadores_xml = ELEMENTOS.find_all('alimentador')
+    alimentadores_xml = elementos.find_all('alimentador')
     alimentadores = dict()
 
     for alimen_tag in alimentadores_xml:
-        elemento_tag = TOPO.find_all('elemento', tipo='alimentador', nome=alimen_tag['nome'])[0]
+        elemento_tag = topo.find_all('elemento', tipo='alimentador', nome=alimen_tag['nome'])[0]
         nomes_dos_trechos = [trecho['nome'] for trecho in elemento_tag.trechos.findChildren('trecho')]
         nomes_dos_setores = [setor['nome'] for setor in elemento_tag.setores.findChildren('setor')]
         nomes_das_chaves = [chave['nome'] for chave in elemento_tag.chaves.findChildren('chave')]
@@ -225,7 +233,7 @@ def _gerar_alimentadores(setores, trechos, chaves):
 def _gerar_transformadores():
     # Busca e instanciamento dos objetos do tipo Transformador
     print 'Gerando Transformadores'
-    transformadores_xml = ELEMENTOS.find_all('transformador')
+    transformadores_xml = elementos.find_all('transformador')
     transformadores = dict()
 
     for trafo_tag in transformadores_xml:
@@ -286,11 +294,11 @@ def _gerar_transformadores():
 def _gerar_subestacaoes(alimentadores, transformadores):
     # Busca e instanciamento dos objetos do tipo Subestacao
     print 'Gerando Subestações...'
-    subestacoes_xml = ELEMENTOS.find_all('subestacao')
+    subestacoes_xml = elementos.find_all('subestacao')
     subestacoes = dict()
 
     for sub_tag in subestacoes_xml:
-        elemento_tag = TOPO.find_all('elemento', tipo='subestacao', nome=sub_tag['nome'])[0]
+        elemento_tag = topo.find_all('elemento', tipo='subestacao', nome=sub_tag['nome'])[0]
         nomes_dos_alimentadores = [alimentador['nome'] for alimentador in
                                    elemento_tag.alimentadores.findChildren('alimentador')]
 
@@ -311,7 +319,7 @@ def _gerar_subestacaoes(alimentadores, transformadores):
 def _gerar_comunicacao():
     Comunicacao = namedtuple('Comunicacao', ['nome', 'ip', 'porta'])
     chaves_comunica_dict = {}
-    for i in COM.find_all('elemento'):
+    for i in com.find_all('elemento'):
         chaves_comunica_dict[i['nome']] = Comunicacao(
             i['nome'],
             str(i.endereco.ip.text),
