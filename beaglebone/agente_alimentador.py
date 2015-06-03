@@ -9,6 +9,7 @@ from pade.behaviours.protocols import FipaContractNetProtocol
 from xml2objects import carregar_topologia
 
 from rede import Fasor
+from rnp import Arvore
 
 import json
 import pickle
@@ -19,16 +20,38 @@ import numpy as np
 # Comportamentos:
 #
 # CompRequest1 : Comportamento do tipo FIPA-Request Participante
-#                 que o agente AA executa quando recebe mensagem
-#                 do Agente AD com informações de de TRIP no sistema
-# CompRequest2 : Comportamento do tipo FIPA-Request Iniciante que o
-#                 agente AA executa solicitando do agente Topologia
-#                 a arvore de seu alimentador
+#                que o agente AA executa quando recebe mensagem
+#                do Agente AD com informações de TRIP no sistema
+#                Este comportamento também lança o comportamento
+#                ContractNet Iniciante, realiza a poda dos setores
+#                desenergizados e envia mensagem de atualização da
+#                topologia da rede para outros AA
 #
+# CompRequest2 : Comportamento do tipo FIPA-Request Participante que
+#                recebe mensagens de atualização da topologia da rede
 #
+# CompContNet1 : Comportamento FIPA-ContractNet Iniciante que envia mensagens
+#                CFP para outros agentes alimentadores solicitando propostas
+#                de restauração. Este comportamento também faz a analise das
+#                das propostas e analisa-as selecionando a que julga ser a
+#                melhor
+#
+# CompContNet2 : Comportamento FIPA-ContractNet Participante que é acionado
+#                quando um agente recebe uma mensagem do Tipo CFP enviando logo
+#                em seguida uma proposta e caso esta seja selecinada realiza as
+#                as análises de restrição para que seja possível a restauração
 
 
 class CompRequest1(FipaRequestProtocol):
+    '''CompRequest1
+
+        Comportamento do tipo FIPA-Request Participante
+        que o agente AA executa quando recebe mensagem
+        do Agente AD com informações de TRIP no sistema
+        Este comportamento também lança o comportamento
+        ContractNet Iniciante, realiza a poda dos setores
+        desenergizados e envia mensagem de atualização da
+        topologia da rede para outros AA'''
 
     def __init__(self, agent):
         super(CompRequest1, self).__init__(
@@ -125,6 +148,10 @@ class CompRequest1(FipaRequestProtocol):
 
 
 class CompRequest2(FipaRequestProtocol):
+    '''CompRequest2 
+
+       Comportamento do tipo FIPA-Request Participante que 
+       recebe mensagens de atualização da topologia da rede'''
 
     def __init__(self, agent):
         super(CompRequest2, self).__init__(agent=agent,
@@ -185,9 +212,42 @@ class CompRequest2(FipaRequestProtocol):
             self.agent.sincronizando = False
 
 
+class CompRequest3(FipaRequestProtocol):
+    def __init__(self, agent, message):
+        super(CompRequest3, self).__init__(agent=agent, 
+                                           message=message,
+                                           is_initiator=True)
+    
+    def handle_inform(self, message):
+
+        display_message(self.agent.aid.name, 'Mensagem INFORM recebida')
+
+class CompRequest4(FipaRequestProtocol):
+    def __init__(self, agent):
+        super(CompRequest4, self).__init__(agent=agent,
+                                           message=None,
+                                           is_initiator=False)
+
+    def handle_request(self, message):
+        # carrega conteudo da mensagem recebida
+        self.content = json.loads(message.content)
+
+        if self.content['ref'] == 'R_06':
+            display_message(self.agent.aid.name, 'Mensagem REQUEST recebida')
+
+            # armazena o AID do agente Dispositivo
+            self.agent.agente_dispositivo_aid = AID(message.sender.name)
+
+
 class CompContNet1(FipaContractNetProtocol):
-    """
-    """
+    '''CompContNet1
+
+       Comportamento FIPA-ContractNet Iniciante que envia mensagens
+       CFP para outros agentes alimentadores solicitando propostas
+       de restauração. Este comportamento também faz a analise das
+       das propostas e analisa-as selecionando a que julga ser a 
+       melhor'''
+
     def __init__(self, agent, message):
         super(CompContNet1, self).__init__(
             agent=agent, message=message, is_initiator=True)
@@ -204,7 +264,17 @@ class CompContNet1(FipaContractNetProtocol):
         demais_propositores = list()
         display_message(self.agent.aid.name, 'Analisando propostas...')
 
+        # lógica de verificação de alimentadores da mesma subestacao
+        proposes_same_sub = [message for message in proposes 
+                             if message.sender.localname in 
+                             self.agent.subestacao.alimentadores.keys()]
+
+        if proposes_same_sub:
+            proposes = proposes_same_sub
+
         i = 1
+
+        # lógica de seleção de propostas pela maior potência disponibilizada
         for message in proposes:
             content = json.loads(message.content)
             potencia = content['dados']['potencia']
@@ -315,7 +385,13 @@ class CompContNet1(FipaContractNetProtocol):
 
 
 class CompContNet2(FipaContractNetProtocol):
+    '''CompContNet2
 
+       Comportamento FIPA-ContractNet Participante que é acionado
+       quando um agente recebe uma mensagem do Tipo CFP enviando logo
+       em seguida uma proposta e caso esta seja selecinada realiza as
+       as análises de restrição para que seja possível a restauração'''
+       
     def __init__(self, agent):
         super(CompContNet2, self).__init__(agent=agent,
                                            message=None,
@@ -404,6 +480,8 @@ class AgenteAlimentador(Agent):
             if self.aid.localname in sub.alimentadores.keys():
                 self.subestacao = sub
 
+        self.agente_dispositivo_aid = None
+        self.comunicacao = self.topologia['comunicacao']
         self.agentes_solicitados = list()
         self.podas = list()
 
@@ -413,9 +491,12 @@ class AgenteAlimentador(Agent):
         comportamento_requisicao_2 = CompRequest2(self)
         comportamento_contract_net = CompContNet2(self)
 
+        comportamento_requisicao_4 = CompRequest4(self)
+
         self.behaviours.append(comportamento_requisicao)
         self.behaviours.append(comportamento_requisicao_2)
         self.behaviours.append(comportamento_contract_net)
+        self.behaviours.append(comportamento_requisicao_4)
 
     def carregar_info(self):
         pass
@@ -531,9 +612,9 @@ def identificar_setor_de_insercao(ramo, alimentador):
             # em um par do tipo setor do alimentador de recomposição
             # setor do alimentador a ser recomposto
             if chave.n1.nome in alimentador.setores.keys():
-                pares_setores_recomp.append((chave.n1.nome, chave.n2.nome))
+                pares_setores_recomp.append((chave.n1.nome, chave.n2.nome, chave.nome))
             elif chave.n2.nome in alimentador.setores.keys():
-                pares_setores_recomp.append((chave.n2.nome, chave.n1.nome))
+                pares_setores_recomp.append((chave.n2.nome, chave.n1.nome, chave.nome))
         return pares_setores_recomp
 
 
@@ -575,12 +656,29 @@ def podar_setor_mais_profundo(agent,
 
     # retira o setor a ser podado da lista de setores mais profundos
     setor = setores_mais_profundos.pop(0)[0]
+
     # insere o setor podado na lista de setores analisados
     setores_analisados.append(setor)
+
 
     display_message(agent.aid.name, 'Poda do setor: {setor}'.format(setor=setor))
     # realiza a poda do setor
     poda = alimentador.podar(setor, alterar_rnp=True)
+
+
+    # encontra a chave que isola o ramo do setor podado
+    chave_de_isolacao = None
+    # percorre as chaves do alimentador
+    for chave in alimentador.chaves.keys():
+        # se for chave do setor a ser podado, entra no if
+        if alimentador.chaves[chave].n1.nome == setor or alimentador.chaves[chave].n2.nome == setor:
+            # se a chave fizer fronteira com a rnp
+            # print 'chave pertence ao setor: ', chave
+            # print 'rnp  de alimentador: ', alimentador.rnp
+            if alimentador.chaves[chave].n1.nome in alimentador.rnp[1, :] or \
+            alimentador.chaves[chave].n2.nome in alimentador.rnp[1, :]:
+                chave_de_isolacao = chave
+                # print '>>chave de isolação ', chave_de_isolacao
 
     # Envia mensagem para atualizar os outros agentes
     # que também têm uma representação da rede
@@ -588,17 +686,64 @@ def podar_setor_mais_profundo(agent,
                       'poda',
                       alimentador.nome,
                       setor)
-    # notificar_agentes(agent,
-    #                  'poda',
-    #                  alimentador.nome,
-    #                  setor)
 
     # retorna uma tupla de setores_mais_profundos
-    return setores_analisados, setores_mais_profundos, profundidade, poda
+    return setores_analisados, setores_mais_profundos, profundidade, poda, chave_de_isolacao
 
 
 def inserir_ramos_recursivo(agent, alimentador, subestacao, ramos):
-    ramos_2 = list()
+    
+    # Escolha da ordem de inserção dos ramos de acordo com as 
+    # prioridades
+
+    # calculo dos indices de prioridade de cada ramo
+    # de acordo com a seguinte equação:
+    #                         soma_das_prioridades  
+    #   prioridade_media =  -------------------------
+    #                       numero de setores do ramo
+
+    indice_prioridades_dict = {}
+    for ramo in ramos:
+        soma_prioridades = 0
+        for setor in ramo[0].values():
+            soma_prioridades += setor.prioridade
+
+        # indice_prioridades_dict é um dicionario contendo pares
+        # chave/valor, as chaves são o identificador do objeto
+        # ramo e os valores são tuplas com o primeiro elemento
+        # o indice de prioridade e o segundo o proprio obejto
+        # ramo
+        indice_prioridades_dict[id(ramo)] = (
+            float(soma_prioridades)/float(len(ramo[0].keys())), 
+            ramo
+        )
+
+    # reorganização da lista ramos de acordo com a prioridade
+    # de cada ramo
+    ramos_2 = []
+    for ramo in ramos:
+        prioridade_max = max(
+            [i[0] for i in indice_prioridades_dict.values()]
+        )
+        # a variavel ramo recebe o objeto ramo de maior prioridade
+        # dentre os existentes no dicionario indice_prioridades_dict
+        ramo = [i[1] for i in indice_prioridades_dict.values()
+         if i[0] == prioridade_max]
+        
+        indice_prioridades_dict.pop(id(ramo[0]))
+        ramos_2.append(ramo[0])
+
+    ramos = ramos_2
+    ramos_2 = []
+
+
+    # armazena a estrtura RNP inicial do alimentador
+    arvore_inicial = Arvore(agent.alimentador.arvore, dtype=str)
+    arvore_inicial.ordenar(agent.alimentador.raiz)
+    rnp_inicial = arvore_inicial.rnp
+
+    # inicializa a variável chave_de_isolacao
+    chave_de_isolacao = None
 
     # for percorre os ramos afetados tentando a recomposicao de cada um deles!
     for ramo in ramos:
@@ -610,7 +755,7 @@ def inserir_ramos_recursivo(agent, alimentador, subestacao, ramos):
         if pares_setores_recomp == []:
             ramos_2.append(ramo)
         else:
-            no, no_raiz = pares_setores_recomp[0]
+            no, no_raiz, chave = pares_setores_recomp[0]
 
             # inserção de todo o ramo na arvore do alimentador
             alimentador.inserir_ramo(no, ramo, no_raiz)
@@ -658,7 +803,8 @@ def inserir_ramos_recursivo(agent, alimentador, subestacao, ramos):
                     (setores_analisados,
                      setores_mais_profundos,
                      prof,
-                     poda) = info_poda
+                     poda,
+                     chave_de_isolacao) = info_poda
                     poda_de_setores.append(poda)
 
                 # atualização da potencia fornecida pelos transformadores
@@ -683,7 +829,8 @@ def inserir_ramos_recursivo(agent, alimentador, subestacao, ramos):
                     (setores_analisados,
                      setores_mais_profundos,
                      prof,
-                     poda) = info_poda
+                     poda,
+                     chave_de_isolacao) = info_poda
 
                     poda_de_setores.append(poda)
 
@@ -693,13 +840,15 @@ def inserir_ramos_recursivo(agent, alimentador, subestacao, ramos):
                         (setores_analisados,
                          setores_mais_profundos,
                          prof,
-                         poda) = info_poda
+                         poda,
+                         chave_de_isolacao) = info_poda
 
                     # calculo de fluxo de carga no alimentador
                     subestacao.calcular_fluxo_de_carga()
                     trecho = verificar_carregamento_dos_condutores(agent, subestacao)
                     if trecho is not None:
                         display_message(agent.aid.name, 'Trecho {tr} em sobrecarga'.format(tr=trecho))
+
                 else:
                     no = verificar_nivel_de_tensao(agent, subestacao)
 
@@ -713,7 +862,8 @@ def inserir_ramos_recursivo(agent, alimentador, subestacao, ramos):
                         (setores_analisados,
                          setores_mais_profundos,
                          prof,
-                         poda) = info_poda
+                         poda,
+                         chave_de_isolacao) = info_poda
 
                         poda_de_setores.append(poda)
                         if info_poda is None:
@@ -722,7 +872,8 @@ def inserir_ramos_recursivo(agent, alimentador, subestacao, ramos):
                             (setores_analisados,
                              setores_mais_profundos,
                              prof,
-                             poda) = info_poda
+                             poda,
+                             chave_de_isolacao) = info_poda
                             poda_de_setores.append(poda)
                         # calculo de fluxo de carga no alimentador
                         subestacao.calcular_fluxo_de_carga()
@@ -730,8 +881,40 @@ def inserir_ramos_recursivo(agent, alimentador, subestacao, ramos):
                         if no is not None:
                             display_message(agent.aid.name, 'No de carga {no} com' \
                                                             'violacao de tensao'.format(no=no))
+                # se a estrtura RNP do alimentador foi modificada
+                if not agent.alimentador.rnp.size == rnp_inicial.size:
+                    display_message(agent.aid.name, 'Enviando comando de fechamento para AD...')
 
-                if trecho is None and no is None:
+                    # # # # # #
+                    # Envia mensagem para AD fechar chave de recomposicao
+                    # TODO: e abrir chave de isolação
+                    # # # # # #
+                    
+                    message = ACLMessage(ACLMessage.REQUEST)
+                    message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
+                    if chave_de_isolacao is not None:
+                        message.set_content(json.dumps({'ref': 'R_05',
+                                                        'dados': {'chaves': [chave, chave_de_isolacao],
+                                                                  'estados': [1, 0]
+                                                                  }
+                                                        },
+                                                       indent=4)
+                                            )
+                    else:
+                        message.set_content(json.dumps({'ref': 'R_05',
+                                                        'dados': {'chaves': [chave],
+                                                                  'estados': [1]
+                                                                  }
+                                                        },
+                                                       indent=4)
+                                            )
+                    message.add_receiver(agent.agente_dispositivo_aid)
+
+                    # lança comportamento
+                    comp = CompRequest3(agent, message)
+                    agent.behaviours.append(comp)
+                    comp.on_start()
+
                     display_message(agent.aid.name, 'Recomposição do ramo realizada')
                     print alimentador.rnp
                     inserir_ramos_recursivo(agent, alimentador, subestacao, ramos_2)

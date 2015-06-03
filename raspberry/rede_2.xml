@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--> Estrutura da rede em analise</!-->
+<!-->
+*****************************************
+**
+** Informacoes a respeito da estrutura da rede
+**
+*****************************************
+</!-->
 <rede>
+	<!-->
+	*****************************************
+	**
+	** Elementos que compoem a rede
+	**
+	*****************************************
+	</!-->
 	<elementos>
 		<chave nome="1" estado="fechado"/>
 		<chave nome="2" estado="fechado"/>
@@ -22,19 +35,19 @@
 			<potencia tipo="reativa" multip="k" unid="VAr">0.0</potencia>
 		</no>
 		<no nome="A1">
-			<potencia tipo="ativa" multip="k" unid="W">400.0</potencia>
+			<potencia tipo="ativa" multip="k" unid="W">500.0</potencia>
 			<potencia tipo="reativa" multip="k" unid="VAr">100.0</potencia>
 		</no>
 		<no nome="A2">
-			<potencia tipo="ativa" multip="k" unid="W">500.0</potencia>
+			<potencia tipo="ativa" multip="k" unid="W">300.0</potencia>
 			<potencia tipo="reativa" multip="k" unid="VAr">50.0</potencia>
 		</no>
 		<no nome="A3">
-			<potencia tipo="ativa" multip="k" unid="W">300.0</potencia>
+			<potencia tipo="ativa" multip="k" unid="W">400.0</potencia>
 			<potencia tipo="reativa" multip="k" unid="VAr">70.0</potencia>
 		</no>
 		<no nome="B1">
-			<potencia tipo="ativa" multip="k" unid="W">500.0</potencia>
+			<potencia tipo="ativa" multip="k" unid="W">600.0</potencia>
 			<potencia tipo="reativa" multip="k" unid="VAr">80.0</potencia>
 		</no>
 		<no nome="B2">
@@ -46,31 +59,31 @@
 			<potencia tipo="reativa" multip="k" unid="VAr">100.0</potencia>
 		</no>
 		<no nome="C2">
-			<potencia tipo="ativa" multip="k" unid="W">800.0</potencia>
+			<potencia tipo="ativa" multip="k" unid="W">900.0</potencia>
 			<potencia tipo="reativa" multip="k" unid="VAr">300.0</potencia>
 		</no>
 		<no nome="C3">
-			<potencia tipo="ativa" multip="k" unid="W">400.0</potencia>
-			<potencia tipo="reativa" multip="k" unid="VAr">100.0</potencia>
-		</no>
-		<no nome="F1">
-			<potencia tipo="ativa" multip="k" unid="W">700.0</potencia>
-			<potencia tipo="reativa" multip="k" unid="VAr">200.0</potencia>
-		</no>
-		<no nome="F2">
 			<potencia tipo="ativa" multip="k" unid="W">500.0</potencia>
 			<potencia tipo="reativa" multip="k" unid="VAr">100.0</potencia>
 		</no>
+		<no nome="F1">
+			<potencia tipo="ativa" multip="k" unid="W">800.0</potencia>
+			<potencia tipo="reativa" multip="k" unid="VAr">200.0</potencia>
+		</no>
+		<no nome="F2">
+			<potencia tipo="ativa" multip="k" unid="W">600.0</potencia>
+			<potencia tipo="reativa" multip="k" unid="VAr">100.0</potencia>
+		</no>
 		<no nome="F3">
-			<potencia tipo="ativa" multip="k" unid="W">200.0</potencia>
+			<potencia tipo="ativa" multip="k" unid="W">500.0</potencia>
 			<potencia tipo="reativa" multip="k" unid="VAr">50.0</potencia>
 		</no>
 		<no nome="G1">
-			<potencia tipo="ativa" multip="k" unid="W">200.0</potencia>
-			<potencia tipo="reativa" multip="k" unid="VAr">30.0</potencia>
+			<potencia tipo="ativa" multip="k" unid="W">600.0</potencia>
+			<potencia tipo="reativa" multip="k" unid="VAr">100.0</potencia>
 		</no>
 		<no nome="G2">
-			<potencia tipo="ativa" multip="k" unid="W">300.0</potencia>
+			<potencia tipo="ativa" multip="k" unid="W">700.0</potencia>
 			<potencia tipo="reativa" multip="k" unid="VAr">100.0</potencia>
 		</no>
 		<no nome="H1">
@@ -78,11 +91,11 @@
 			<potencia tipo="reativa" multip="k" unid="VAr">100.0</potencia>
 		</no>
 		<no nome="H2">
-			<potencia tipo="ativa" multip="k" unid="W">300.0</potencia>
+			<potencia tipo="ativa" multip="k" unid="W">400.0</potencia>
 			<potencia tipo="reativa" multip="k" unid="VAr">50.0</potencia>
 		</no>
 		<no nome="I1">
-			<potencia tipo="ativa" multip="k" unid="W">600.0</potencia>
+			<potencia tipo="ativa" multip="k" unid="W">700.0</potencia>
 			<potencia tipo="reativa" multip="k" unid="VAr">160.0</potencia>
 		</no>
 		<no nome="I2">
@@ -90,7 +103,7 @@
 			<potencia tipo="reativa" multip="k" unid="VAr">300.0</potencia>
 		</no>
 		<no nome="I3">
-			<potencia tipo="ativa" multip="k" unid="W">300.0</potencia>
+			<potencia tipo="ativa" multip="k" unid="W">800.0</potencia>
 			<potencia tipo="reativa" multip="k" unid="VAr">80.0</potencia>
 		</no>
 		<no nome="S2">
@@ -119,6 +132,8 @@
 		</no>
 		
 		<condutor nome="CAA 266R" rp="0.2391" xp="0.37895" rz="0.41693" xz="1.55591" ampacidade="301"/>
+
+		<condutor nome="Cobre 70R" rp="0.3167" xp="0.41669" rz="0.49454" xz="1.94094" ampacidade="274"/>
 
 		<trecho nome="S1CH1">
 			<comprimento multip="k" unid="m">0.01</comprimento>
@@ -178,7 +193,7 @@
 			<comprimento multip="k" unid="m">1</comprimento>
 		</trecho>
 		<trecho nome="CH4G1">
-			<comprimento multip="k" unid="m">1</comprimento>
+			<comprimento multip="k" unid="m">0.01</comprimento>
 		</trecho>
 		<trecho nome="G1G2">
 			<comprimento multip="k" unid="m">1</comprimento>
@@ -241,24 +256,24 @@
 			<comprimento multip="k" unid="m">1</comprimento>
 		</trecho>
 
-		<setor nome="S1"/>
-		<setor nome="A"/>
-		<setor nome="B"/>
-		<setor nome="C"/>
-		<setor nome="F"/>
-		<setor nome="G"/>
-		<setor nome="H"/>
-		<setor nome="I"/>
-		<setor nome="S2"/>
-		<setor nome="D"/>
-		<setor nome="E"/>
+		<setor nome="S1" prioridade="0"/>
+		<setor nome="A"  prioridade="8"/>
+		<setor nome="B"  prioridade="4"/>
+		<setor nome="C"  prioridade="10"/>
+		<setor nome="F"  prioridade="5"/>
+		<setor nome="G"  prioridade="5"/>
+		<setor nome="H"  prioridade="5"/>
+		<setor nome="I"  prioridade="5"/>
+		<setor nome="S2" prioridade="0"/>
+		<setor nome="D"  prioridade="8"/>
+		<setor nome="E"  prioridade="6"/>
 
 		<alimentador nome="S1_AL1"/>
 		<alimentador nome="S1_AL2"/>
 		<alimentador nome="S2_AL1"/>
 		
 		<transformador nome="S1_T1">
-			<potencia tipo="aparente" multip="M" unid="VA">5.0</potencia>
+			<potencia tipo="aparente" multip="M" unid="VA">6.0</potencia>
 
 			<impedancia tipo="seq_pos">
 				<resistencia multip="" unid="ohms">10.0</resistencia>
@@ -280,7 +295,7 @@
 		</transformador>
 
 		<transformador nome="S1_T2">
-			<potencia tipo="aparente" multip="M" unid="VA">5.0</potencia>
+			<potencia tipo="aparente" multip="M" unid="VA">6.0</potencia>
 
 			<impedancia tipo="seq_pos">
 				<resistencia multip="" unid="ohms">10.0</resistencia>
@@ -326,7 +341,14 @@
 		<subestacao nome="S1"/>
 		<subestacao nome="S2"/>
 	</elementos>
-
+	<!-->
+	*****************************************
+	**
+	** Relacionamento entre os elementos
+	** que compoem a rede
+	**
+	*****************************************
+	</!-->
 	<topologia>
 		<elemento tipo="no" nome="S1">
 			<vizinhos>
@@ -1129,7 +1151,7 @@
 				<chave nome="9"/>
 			</n2>
 			<condutores>
-				<condutor nome="CAA 266R"/>
+				<condutor nome="Cobre 70R"/>
 			</condutores>
 		</elemento>
 		<elemento tipo="trecho" nome="CH9D1">
@@ -1140,7 +1162,7 @@
 				<no nome="D1"/>
 			</n2>
 			<condutores>
-				<condutor nome="CAA 266R"/>
+				<condutor nome="Cobre 70R"/>
 			</condutores>
 		</elemento>
 		<elemento tipo="trecho" nome="D1D2">
@@ -1151,7 +1173,7 @@
 				<no nome="D2"/>
 			</n2>
 			<condutores>
-				<condutor nome="CAA 266R"/>
+				<condutor nome="Cobre 70R"/>
 			</condutores>
 		</elemento>
 		<elemento tipo="trecho" nome="D1CH13">
@@ -1163,7 +1185,7 @@
 				<chave nome="13"/>
 			</n2>
 			<condutores>
-				<condutor nome="CAA 266R"/>
+				<condutor nome="Cobre 70R"/>
 			</condutores>
 		</elemento>
 		<elemento tipo="trecho" nome="D1CH8">
@@ -1174,7 +1196,7 @@
 				<chave nome="8"/>
 			</n2>
 			<condutores>
-				<condutor nome="CAA 266R"/>
+				<condutor nome="Cobre 70R"/>
 			</condutores>
 		</elemento>
 		<elemento tipo="trecho" nome="CH8E1">
@@ -1185,7 +1207,7 @@
 				<no nome="E1"/>
 			</n2>
 			<condutores>
-				<condutor nome="CAA 266R"/>
+				<condutor nome="Cobre 70R"/>
 			</condutores>
 		</elemento>
 		<elemento tipo="trecho" nome="E1E3">
@@ -1196,7 +1218,7 @@
 				<no nome="E3"/>
 			</n2>
 			<condutores>
-				<condutor nome="CAA 266R"/>
+				<condutor nome="Cobre 70R"/>
 			</condutores>
 		</elemento>
 		<elemento tipo="trecho" nome="E3CH6">
@@ -1207,7 +1229,7 @@
 				<chave nome="6"/>
 			</n2>
 			<condutores>
-				<condutor nome="CAA 266R"/>
+				<condutor nome="Cobre 70R"/>
 			</condutores>
 		</elemento>
 		<elemento tipo="trecho" nome="E1E2">
@@ -1218,7 +1240,7 @@
 				<no nome="E2"/>
 			</n2>
 			<condutores>
-				<condutor nome="CAA 266R"/>
+				<condutor nome="Cobre 70R"/>
 			</condutores>
 		</elemento>
 		<elemento tipo="trecho" nome="E2CH7">
@@ -1229,7 +1251,7 @@
 				<chave nome="7"/>
 			</n2>
 			<condutores>
-				<condutor nome="CAA 266R"/>
+				<condutor nome="Cobre 70R"/>
 			</condutores>
 		</elemento>
 
@@ -1360,4 +1382,91 @@
 			</transformadores>
 		</elemento>
 	</topologia>
+	<!-->
+	*****************************************
+	**
+	** Dados de Comunicacao dos IED
+	**
+	*****************************************
+	</!-->
+	<comunicacao>
+		<elemento tipo="chave" nome="1">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5001</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="2">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5002</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="3">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5003</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="4">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5004</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="5">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5005</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="6">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5006</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="7">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5007</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="8">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5008</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="9">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5009</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="10">
+			<endereco>
+				<ip>192.168.1.53</ip>
+				<porta>102</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="11">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5011</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="12">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5012</porta>
+			</endereco>
+		</elemento>
+		<elemento tipo="chave" nome="13">
+			<endereco>
+				<ip>localhost</ip>
+				<porta>5013</porta>
+			</endereco>
+		</elemento>
+	</comunicacao>
 </rede>
