@@ -742,6 +742,9 @@ def inserir_ramos_recursivo(agent, alimentador, subestacao, ramos):
     arvore_inicial.ordenar(agent.alimentador.raiz)
     rnp_inicial = arvore_inicial.rnp
 
+    # inicializa a variável chave_de_isolacao
+    chave_de_isolacao = None
+
     # for percorre os ramos afetados tentando a recomposicao de cada um deles!
     for ramo in ramos:
         # identifica quais setores fazem vizinhança ao alimentador
@@ -889,13 +892,22 @@ def inserir_ramos_recursivo(agent, alimentador, subestacao, ramos):
                     
                     message = ACLMessage(ACLMessage.REQUEST)
                     message.set_protocol(ACLMessage.FIPA_REQUEST_PROTOCOL)
-                    message.set_content(json.dumps({'ref': 'R_05',
-                                                    'dados': {'chaves': [chave, chave_de_isolacao],
-                                                              'estados': [1, 0]
-                                                              }
-                                                    },
-                                                   indent=4)
-                                        )
+                    if chave_de_isolacao is not None:
+                        message.set_content(json.dumps({'ref': 'R_05',
+                                                        'dados': {'chaves': [chave, chave_de_isolacao],
+                                                                  'estados': [1, 0]
+                                                                  }
+                                                        },
+                                                       indent=4)
+                                            )
+                    else:
+                        message.set_content(json.dumps({'ref': 'R_05',
+                                                        'dados': {'chaves': [chave],
+                                                                  'estados': [1]
+                                                                  }
+                                                        },
+                                                       indent=4)
+                                            )
                     message.add_receiver(agent.agente_dispositivo_aid)
 
                     # lança comportamento
