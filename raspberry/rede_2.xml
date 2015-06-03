@@ -1392,79 +1392,79 @@
 	<comunicacao>
 		<elemento tipo="chave" nome="1">
 			<endereco>
-				<ip>localhost</ip>
+				<ip>192.168.24.101</ip>
 				<porta>5001</porta>
 			</endereco>
 		</elemento>
 		<elemento tipo="chave" nome="2">
 			<endereco>
-				<ip>localhost</ip>
+				<ip>192.168.24.101</ip>
 				<porta>5002</porta>
 			</endereco>
 		</elemento>
 		<elemento tipo="chave" nome="3">
 			<endereco>
-				<ip>localhost</ip>
+				<ip>192.168.24.101</ip>
 				<porta>5003</porta>
 			</endereco>
 		</elemento>
 		<elemento tipo="chave" nome="4">
 			<endereco>
-				<ip>localhost</ip>
+				<ip>192.168.24.101</ip>
 				<porta>5004</porta>
 			</endereco>
 		</elemento>
 		<elemento tipo="chave" nome="5">
 			<endereco>
-				<ip>localhost</ip>
+				<ip>192.168.24.101</ip>
 				<porta>5005</porta>
 			</endereco>
 		</elemento>
 		<elemento tipo="chave" nome="6">
 			<endereco>
-				<ip>localhost</ip>
+				<ip>192.168.24.101</ip>
 				<porta>5006</porta>
 			</endereco>
 		</elemento>
 		<elemento tipo="chave" nome="7">
 			<endereco>
-				<ip>localhost</ip>
+				<ip>192.168.24.101</ip>
 				<porta>5007</porta>
 			</endereco>
 		</elemento>
 		<elemento tipo="chave" nome="8">
 			<endereco>
-				<ip>localhost</ip>
+				<ip>192.168.24.101</ip>
 				<porta>5008</porta>
 			</endereco>
 		</elemento>
 		<elemento tipo="chave" nome="9">
 			<endereco>
-				<ip>localhost</ip>
+				<ip>192.168.24.101</ip>
 				<porta>5009</porta>
 			</endereco>
 		</elemento>
 		<elemento tipo="chave" nome="10">
 			<endereco>
-				<ip>192.168.1.53</ip>
+				<ip>192.168.24.1</ip>
 				<porta>102</porta>
 			</endereco>
 		</elemento>
 		<elemento tipo="chave" nome="11">
 			<endereco>
-				<ip>localhost</ip>
+				<ip>192.168.24.101</ip>
 				<porta>5011</porta>
 			</endereco>
 		</elemento>
 		<elemento tipo="chave" nome="12">
 			<endereco>
-				<ip>localhost</ip>
+				<ip>192.168.24.101</ip>
 				<porta>5012</porta>
 			</endereco>
 		</elemento>
 		<elemento tipo="chave" nome="13">
 			<endereco>
-				<ip>localhost</ip>
+				<ip>192.168.24.101</ip>
 				<porta>5013</porta>
 			</endereco>
 		</elemento>
